@@ -45,11 +45,11 @@ Replace the `*` in the environment variables with a name for Reet identify what 
 
 | Environment Variable | Description | Example/s | Required |
 | :--- | :--- | :--- | :-- |
-| REET_*_NAME | The domain name of a DNS record to update. | example.com | ✔️ |
-| REET_*_TYPE | Type of DNS record to update. | A, AAAA | ✔️ |
-| REET_*_IP | Specify an IP address to update the record to. If not specified it will use your public IP address. | 127.0.0.1 | ❌ |
-| REET_*_TTL | Specify an TTL to use for the DNS record. If not specified then it will use the value of 1 which is 'automatic'. | 120 | ❌ |
-| REET_*_PROXIED | Change whether the DNS record should be proxied through cloudflares servers or not. | true | ❌ |
+| REET_*_NAME | The domain name of a DNS record to update. | example.com | 🗸 |
+| REET_*_TYPE | Type of DNS record to update. | A, AAAA | 🗸 |
+| REET_*_IP | Specify an IP address to update the record to. If not specified it will use your public IP address. | 127.0.0.1 | x |
+| REET_*_TTL | Specify an TTL to use for the DNS record. If not specified then it will use the value of 1 which is 'automatic'. | 120 | x |
+| REET_*_PROXIED | Change whether the DNS record should be proxied through cloudflares servers or not. | true | x |
 
 ## Contributing
 
