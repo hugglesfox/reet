@@ -41,7 +41,7 @@ If the environment variable listed has a default value then it is not required. 
 
 ### Record Configuration
 
-Replace the `*` in the environment variables with a name for Reet identify what configuration values releate to each other. These environment vairables can be specified as many times as wanted for management of multiple domains.
+Replace the `*` in the environment variables with a name for Reet identify what configuration values relate to each other. These environment variables can be specified as many times as wanted for management of multiple domains.
 
 | Environment Variable | Description | Example/s | Required |
 | :--- | :--- | :--- | :-- |
