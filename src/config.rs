@@ -8,9 +8,7 @@ struct Config<'a> {
 
 impl<'a> Config<'a> {
     pub fn new(prefix: &'a str) -> Self {
-        Self {
-            prefix: prefix,
-        }
+        Self { prefix }
     }
 
     fn vars(&self) -> impl Iterator<Item = (String, String)> + '_ {
@@ -27,6 +25,25 @@ impl<'a> Config<'a> {
 
     fn get_var_by<S: 'a + AsRef<str>>(&self, suffix: S) -> Option<String> {
         self.get_vars_by(suffix).next().map(|t| t.1)
+    }
+    /// Get the `REET_ZONE_ID` environment variable
+    pub fn zone_id(&self) -> Option<String> {
+        self.get_var_by("_ZONE_ID")
+    }
+
+    /// Get the `REET_CLOUDFLARE_EMAIL` encvrionment variable
+    pub fn cloudflare_email(&self) -> Option<String> {
+        self.get_var_by("_CLOUDFLARE_EMAIL")
+    }
+
+    /// Get the `REET_CLOUDFLARE_API_KEY` encvrionment variable
+    pub fn cloudflare_api_key(&self) -> Option<String> {
+        self.get_var_by("_CLOUDFLARE_API_KEY")
+    }
+
+    /// Get the `REET_FREQUENCY` encvrionment variable
+    pub fn frequency(&self) -> Option<String> {
+        self.get_var_by("_FREQUENCY")
     }
 
     /// Get all the `REET_*_NAME` environment variables
@@ -60,25 +77,5 @@ impl<'a> Config<'a> {
         self.get_vars_by("_PROXIED")
             .map(|(n, v)| (n, v.parse().expect("Invalid bool")))
             .collect()
-    }
-
-    /// Get the `REET_ZONE_ID` environment variable
-    pub fn zone_id(&self) -> Option<String> {
-        self.get_var_by("_ZONE_ID")
-    }
-
-    /// Get the `REET_CLOUDFLARE_EMAIL` encvrionment variable
-    pub fn cloudflare_email(&self) -> Option<String> {
-        self.get_var_by("_CLOUDFLARE_EMAIL")
-    }
-
-    /// Get the `REET_CLOUDFLARE_API_KEY` encvrionment variable
-    pub fn cloudflare_api_key(&self) -> Option<String> {
-        self.get_var_by("_CLOUDFLARE_API_KEY")
-    }
-
-    /// Get the `REET_FREQUENCY` encvrionment variable
-    pub fn frequency(&self) -> Option<String> {
-        self.get_var_by("_FREQUENCY")
     }
 }
