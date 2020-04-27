@@ -1,7 +1,7 @@
 use std::fmt;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq)]
 pub enum RecordType {
     A,
     AAAA,
@@ -23,7 +23,7 @@ pub enum RecordType {
     URI,
 }
 
-impl From<&str> for DNSType {
+impl From<&str> for RecordType {
     fn from(s: &str) -> Self {
         match s {
             "A" => Self::A,
@@ -49,7 +49,7 @@ impl From<&str> for DNSType {
     }
 }
 
-impl fmt::Display for DNSType {
+impl fmt::Display for RecordType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::A => write!(f, "A"),
@@ -87,7 +87,7 @@ mod tests {
         .iter()
         {
             assert_eq!(
-                DNSType::from(*record_type).to_string(),
+                RecordType::from(*record_type).to_string(),
                 record_type.to_string()
             )
         }
@@ -96,6 +96,6 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_bad_dns_type() {
-        DNSType::from("PANIC");
+        RecordType::from("PANIC");
     }
 }
