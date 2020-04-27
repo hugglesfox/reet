@@ -82,7 +82,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_dns_type() {
+    fn test_record_type() {
         for record_type in [
             "A", "AAAA", "CAA", "CERT", "CNAME", "DNSKEY", "DS", "LOC", "NAPTR", "NS", "PTR",
             "SMIMEA", "SPF", "SRV", "SSHPF", "TLSA", "TXT", "URI",
@@ -90,7 +90,7 @@ mod tests {
         .iter()
         {
             assert_eq!(
-                RecordType::from(*record_type).to_string(),
+                record_type.parse::<RecordType>().unwrap().to_string(),
                 record_type.to_string()
             )
         }
@@ -98,7 +98,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_bad_dns_type() {
-        RecordType::from("PANIC");
+    fn test_bad_record_type() {
+        "PANIC".parse::<RecordType>().unwrap();
     }
 }
