@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use std::fmt;
 use serde::{Serialize, Deserialize};
 
@@ -23,28 +24,30 @@ pub enum RecordType {
     URI,
 }
 
-impl From<&str> for RecordType {
-    fn from(s: &str) -> Self {
+impl FromStr for RecordType {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, String> {
         match s {
-            "A" => Self::A,
-            "AAAA" => Self::AAAA,
-            "CAA" => Self::CAA,
-            "CERT" => Self::CERT,
-            "CNAME" => Self::CNAME,
-            "DNSKEY" => Self::DNSKEY,
-            "DS" => Self::DS,
-            "LOC" => Self::LOC,
-            "NAPTR" => Self::NAPTR,
-            "NS" => Self::NS,
-            "PTR" => Self::PTR,
-            "SMIMEA" => Self::SMIMEA,
-            "SPF" => Self::SPF,
-            "SRV" => Self::SRV,
-            "SSHPF" => Self::SSHPF,
-            "TLSA" => Self::TLSA,
-            "TXT" => Self::TXT,
-            "URI" => Self::URI,
-            _ => panic!("Invalid DNS record type"),
+            "A" => Ok(Self::A),
+            "AAAA" => Ok(Self::AAAA),
+            "CAA" => Ok(Self::CAA),
+            "CERT" => Ok(Self::CERT),
+            "CNAME" => Ok(Self::CNAME),
+            "DNSKEY" => Ok(Self::DNSKEY),
+            "DS" => Ok(Self::DS),
+            "LOC" => Ok(Self::LOC),
+            "NAPTR" => Ok(Self::NAPTR),
+            "NS" => Ok(Self::NS),
+            "PTR" => Ok(Self::PTR),
+            "SMIMEA" => Ok(Self::SMIMEA),
+            "SPF" => Ok(Self::SPF),
+            "SRV" => Ok(Self::SRV),
+            "SSHPF" => Ok(Self::SSHPF),
+            "TLSA" => Ok(Self::TLSA),
+            "TXT" => Ok(Self::TXT),
+            "URI" => Ok(Self::URI),
+            e => Err(format!("Invalid DNS record type {}", e)),
         }
     }
 }
