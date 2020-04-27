@@ -1,6 +1,8 @@
 use std::fmt;
+use serde::{Serialize, Deserialize};
 
-pub enum DNSType {
+#[derive(Serialize, Deserialize)]
+pub enum RecordType {
     A,
     AAAA,
     CAA,
@@ -84,7 +86,10 @@ mod tests {
         ]
         .iter()
         {
-            assert_eq!(DNSType::from(*record_type).to_string(), record_type.to_string())
+            assert_eq!(
+                DNSType::from(*record_type).to_string(),
+                record_type.to_string()
+            )
         }
     }
 
