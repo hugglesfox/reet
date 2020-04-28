@@ -109,4 +109,77 @@ impl<'a> Config<'a> {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn setup() -> Config<'static> {
+        env::set_var("REETTEST_ZONE_ID", "cloudflare_zone_id");
+        env::set_var("REETTEST_CLOUDFLARE_EMAIL", "test@example.com");
+        env::set_var("REETTEST_CLOUDFLARE_API_KEY", "cloudflare_api_key");
+        env::set_var("REETTEST_FREQUENCY", "10");
+
+        env::set_var("REETTEST_FOO_NAME", "example.com");
+        env::set_var("REETTEST_FOO_TYPE", "A");
+        env::set_var("REETTEST_FOO_IP", "127.0.0.1");
+        env::set_var("REETTEST_FOO_TTL", "120");
+
+        env::set_var("REETTEST_BAR_NAME", "example.org");
+        env::set_var("REETTEST_BAR_TYPE", "AAAA");
+        env::set_var("REETTEST_BAR_PROXIED", "true");
+
+        env::set_var("REETTEST_FIZZ_IP", "::1");
+
+        Config::new("REETTEST")
+    }
+
+    #[test]
+    fn test_vars() {
+        let config = setup();
+
+        assert_eq!(
+            config
+                .vars()
+                .filter(|(name, _)| !name.starts_with("REETTEST"))
+                .collect::<Vec<(String, String)>>(),
+            vec![]
+        )
+    }
+
+    #[test]
+    fn test_config() {
+        let config = setup();
+
+        assert_eq!(config.zone_id().unwrap(), "cloudflare_zone_id");
+        assert_eq!(config.cloudflare_email().unwrap(), "test@example.com");
+        assert_eq!(config.cloudflare_api_key().unwrap(), "cloudflare_api_key");
+        assert_eq!(config.frequency().unwrap(), 10);
+
+        assert_eq!(
+            config.names().collect::<Vec<(String, String)>>(),
+            vec![
+                ("REETTEST_FOO_NAME", "example.com"),
+                ("REETTEST_BAR_NAME", "example.org")
+            ]
+            .iter()
+            .map(|(n, v)| (n.to_string(), v.to_string()))
+            .collect::<Vec<(String, String)>>()
+        );
+        assert_eq!(config.get_type("REETTEST_FOO_NAME").unwrap(), RecordType::A);
+        assert_eq!(
+            config.get_ip("REETTEST_FOO_NAME").unwrap(),
+            "127.0.0.1".parse::<IpAddr>().unwrap()
+        );
+        assert_eq!(config.get_ttl("REETTEST_FOO_NAME").unwrap(), 120);
+        assert_eq!(config.get_proxied("REETTEST_FOO_NAME"), None);
+
+        assert_eq!(config.get_type("REETTEST_BAR_NAME").unwrap(), RecordType::AAAA);
+        assert_eq!(
+            config.get_ip("REETTEST_BAR_NAME"), None
+        );
+        assert_eq!(config.get_ttl("REETTEST_BAR_NAME"), None);
+        assert_eq!(config.get_proxied("REETTEST_BAR_NAME").unwrap(), true);
+
+        assert_eq!(config.get_ip("REETTEST_FIZZ_IP").unwrap(), "::1".parse::<IpAddr>().unwrap());
+    }
 }

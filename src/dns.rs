@@ -2,7 +2,7 @@ use std::str::FromStr;
 use std::fmt;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum RecordType {
     A,
     AAAA,
