@@ -2,7 +2,7 @@ use crate::dns::RecordType;
 use std::env;
 use std::net::IpAddr;
 
-struct Config<'a> {
+pub struct Config<'a> {
     prefix: &'a str,
 }
 
@@ -42,8 +42,9 @@ impl<'a> Config<'a> {
     }
 
     /// Get the `REET_FREQUENCY` encvrionment variable
-    pub fn frequency(&self) -> Option<String> {
+    pub fn frequency(&self) -> Option<i32> {
         self.get_var_by("_FREQUENCY")
+            .map(|v| v.parse().expect("Invalid integer"))
     }
 
     /// Get all the `REET_*_NAME` environment variables
