@@ -42,41 +42,71 @@ impl<'a> Config<'a> {
     }
 
     /// Get the `REET_FREQUENCY` encvrionment variable
-    pub fn frequency(&self) -> Option<i32> {
+    pub fn frequency(&self) -> Option<u32> {
         self.get_var_by("_FREQUENCY")
             .map(|v| v.parse().expect("Invalid integer"))
     }
 
     /// Get all the `REET_*_NAME` environment variables
-    pub fn names(&self) -> Vec<(String, String)> {
-        self.get_vars_by("_NAME").collect()
+    pub fn names(&self) -> impl Iterator<Item = (String, String)> + '_ {
+        self.get_vars_by("_NAME")
     }
 
     /// Get all the `REET_*_TYPE` environment variables
-    pub fn types(&self) -> Vec<(String, RecordType)> {
+    pub fn types(&self) -> impl Iterator<Item = (String, RecordType)> + '_ {
         self.get_vars_by("_TYPE")
             .map(move |(n, v)| (n, v.parse().expect("Invalid DNS record type")))
-            .collect()
     }
 
     /// Get all the `REET_*_IP` environment variables
-    pub fn ip(&self) -> Vec<(String, IpAddr)> {
+    pub fn ip(&self) -> impl Iterator<Item = (String, IpAddr)> + '_ {
         self.get_vars_by("_IP")
             .map(move |(n, v)| (n, v.parse().expect("Invalid IP address")))
-            .collect()
     }
 
     /// Get all the `REET_*_TTL` environment variables
-    pub fn ttl(&self) -> Vec<(String, i32)> {
+    pub fn ttl(&self) -> impl Iterator<Item = (String, u32)> + '_ {
         self.get_vars_by("_TTL")
             .map(|(n, v)| (n, v.parse().expect("Invalid integer")))
-            .collect()
     }
 
     /// Get all the `REET_*_PROXIED` environment variables
-    pub fn proxied(&self) -> Vec<(String, bool)> {
+    pub fn proxied(&self) -> impl Iterator<Item = (String, bool)> + '_ {
         self.get_vars_by("_PROXIED")
             .map(|(n, v)| (n, v.parse().expect("Invalid bool")))
-            .collect()
     }
+
+    /// Get the `REET_*_TYPE` variable from a `REET_*_NAME`
+    pub fn get_type<S: 'a + AsRef<str>>(&self, name: S) -> Option<RecordType> {
+        self.types()
+            .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
+            .next()
+            .map(|(_, v)| v)
+    }
+
+    /// Get the `REET_*_IP` variable from a `REET_*_NAME`
+    pub fn get_ip<S: 'a + AsRef<str>>(&self, name: S) -> Option<IpAddr> {
+        self.ip()
+            .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
+            .next()
+            .map(|(_, v)| v)
+    }
+
+    /// Get the `REET_*_TTL` variable from a `REET_*_NAME`
+    pub fn get_ttl<S: 'a + AsRef<str>>(&self, name: S) -> Option<u32> {
+        self.ttl()
+            .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
+            .next()
+            .map(|(_, v)| v)
+    }
+
+    /// Get the `REET_*_PROXIED` variable from a `REET_*_NAME`
+    pub fn get_proxied<S: 'a + AsRef<str>>(&self, name: S) -> Option<bool> {
+        self.proxied()
+            .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
+            .next()
+            .map(|(_, v)| v)
+    }
+}
+
 }
