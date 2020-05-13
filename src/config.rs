@@ -1,4 +1,3 @@
-use crate::dns::RecordType;
 use std::env;
 use std::net::IpAddr;
 
@@ -26,6 +25,7 @@ impl<'a> Config<'a> {
     fn get_var_by<S: 'a + AsRef<str>>(&self, suffix: S) -> Option<String> {
         self.get_vars_by(suffix).next().map(|t| t.1)
     }
+
     /// Get the `REET_ZONE_ID` environment variable
     pub fn zone_id(&self) -> Option<String> {
         self.get_var_by("_ZONE_ID")
@@ -42,9 +42,9 @@ impl<'a> Config<'a> {
     }
 
     /// Get the `REET_FREQUENCY` encvrionment variable
-    pub fn frequency(&self) -> Option<u32> {
+    pub fn frequency(&self) -> Option<usize> {
         self.get_var_by("_FREQUENCY")
-            .map(|v| v.parse().expect("Invalid integer"))
+            .and_then(|v| v.parse::<usize>().ok())
     }
 
     /// Get all the `REET_*_NAME` environment variables
@@ -52,36 +52,22 @@ impl<'a> Config<'a> {
         self.get_vars_by("_NAME")
     }
 
-    /// Get all the `REET_*_TYPE` environment variables
-    pub fn types(&self) -> impl Iterator<Item = (String, RecordType)> + '_ {
-        self.get_vars_by("_TYPE")
-            .map(move |(n, v)| (n, v.parse().expect("Invalid DNS record type")))
-    }
-
     /// Get all the `REET_*_IP` environment variables
-    pub fn ip(&self) -> impl Iterator<Item = (String, IpAddr)> + '_ {
+    pub fn ip(&self) -> impl Iterator<Item = (String, Option<IpAddr>)> + '_ {
         self.get_vars_by("_IP")
-            .map(move |(n, v)| (n, v.parse().expect("Invalid IP address")))
+            .map(move |(n, v)| (n, v.parse::<IpAddr>().ok()))
     }
 
     /// Get all the `REET_*_TTL` environment variables
-    pub fn ttl(&self) -> impl Iterator<Item = (String, u32)> + '_ {
+    pub fn ttl(&self) -> impl Iterator<Item = (String, Option<usize>)> + '_ {
         self.get_vars_by("_TTL")
-            .map(|(n, v)| (n, v.parse().expect("Invalid integer")))
+            .map(|(n, v)| (n, v.parse::<usize>().ok()))
     }
 
     /// Get all the `REET_*_PROXIED` environment variables
-    pub fn proxied(&self) -> impl Iterator<Item = (String, bool)> + '_ {
+    pub fn proxied(&self) -> impl Iterator<Item = (String, Option<bool>)> + '_ {
         self.get_vars_by("_PROXIED")
-            .map(|(n, v)| (n, v.parse().expect("Invalid bool")))
-    }
-
-    /// Get the `REET_*_TYPE` variable from a `REET_*_NAME`
-    pub fn get_type<S: 'a + AsRef<str>>(&self, name: S) -> Option<RecordType> {
-        self.types()
-            .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
-            .next()
-            .map(|(_, v)| v)
+            .map(|(n, v)| (n, v.parse::<bool>().ok()))
     }
 
     /// Get the `REET_*_IP` variable from a `REET_*_NAME`
@@ -89,15 +75,15 @@ impl<'a> Config<'a> {
         self.ip()
             .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
             .next()
-            .map(|(_, v)| v)
+            .and_then(|(_, v)| v)
     }
 
     /// Get the `REET_*_TTL` variable from a `REET_*_NAME`
-    pub fn get_ttl<S: 'a + AsRef<str>>(&self, name: S) -> Option<u32> {
+    pub fn get_ttl<S: 'a + AsRef<str>>(&self, name: S) -> Option<usize> {
         self.ttl()
             .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
             .next()
-            .map(|(_, v)| v)
+            .and_then(|(_, v)| v)
     }
 
     /// Get the `REET_*_PROXIED` variable from a `REET_*_NAME`
@@ -105,7 +91,7 @@ impl<'a> Config<'a> {
         self.proxied()
             .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
             .next()
-            .map(|(_, v)| v)
+            .and_then(|(_, v)| v)
     }
 }
 
@@ -165,7 +151,6 @@ mod tests {
             .map(|(n, v)| (n.to_string(), v.to_string()))
             .collect::<Vec<(String, String)>>()
         );
-        assert_eq!(config.get_type("REETTEST_FOO_NAME").unwrap(), RecordType::A);
         assert_eq!(
             config.get_ip("REETTEST_FOO_NAME").unwrap(),
             "127.0.0.1".parse::<IpAddr>().unwrap()
@@ -173,13 +158,13 @@ mod tests {
         assert_eq!(config.get_ttl("REETTEST_FOO_NAME").unwrap(), 120);
         assert_eq!(config.get_proxied("REETTEST_FOO_NAME"), None);
 
-        assert_eq!(config.get_type("REETTEST_BAR_NAME").unwrap(), RecordType::AAAA);
-        assert_eq!(
-            config.get_ip("REETTEST_BAR_NAME"), None
-        );
+        assert_eq!(config.get_ip("REETTEST_BAR_NAME"), None);
         assert_eq!(config.get_ttl("REETTEST_BAR_NAME"), None);
         assert_eq!(config.get_proxied("REETTEST_BAR_NAME").unwrap(), true);
 
-        assert_eq!(config.get_ip("REETTEST_FIZZ_IP").unwrap(), "::1".parse::<IpAddr>().unwrap());
+        assert_eq!(
+            config.get_ip("REETTEST_FIZZ_IP").unwrap(),
+            "::1".parse::<IpAddr>().unwrap()
+        );
     }
 }
