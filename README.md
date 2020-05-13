@@ -37,7 +37,7 @@ If the environment variable listed has a default value then it is not required. 
 | REET_ZONE_ID | The zone id of the DNS records to be managed. Reet can only manage 1 zone at a time for simplicity. If you have multiple zones, run multiple instances of Reet. | |
 | REET_CLOUDFLARE_EMAIL | The email address you use for Cloudflare | |
 | REET_CLOUDFLARE_API_KEY | A Cloudflare API key which has the `dns_records:edit` permissions. | |
-| REET_FREQUENCY | The amount of time between ip update requests in minutes. | 5 |
+| REET_FREQUENCY | The amount of time between ip update requests in seconds. | 300 |
 
 ### Record Configuration
 
