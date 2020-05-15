@@ -18,7 +18,6 @@ services:
     image: hugglesfox/reet
     restart: unless-stopped
     environment:
-      - REET_CLOUDFLARE_EMAIL=admin@example.com
       - REET_CLOUDFLARE_API_KEY=_insert_cloudflare_api_key_here_
       - REET_ZONE_ID=_insert_cloudflare_zone_id_here_
       - REET_IPv4_NAME=example.com
