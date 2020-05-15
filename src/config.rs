@@ -31,20 +31,15 @@ impl<'a> Config<'a> {
         self.get_var_by("_ZONE_ID")
     }
 
-    /// Get the `REET_CLOUDFLARE_EMAIL` encvrionment variable
-    pub fn cloudflare_email(&self) -> Option<String> {
-        self.get_var_by("_CLOUDFLARE_EMAIL")
-    }
-
     /// Get the `REET_CLOUDFLARE_API_KEY` encvrionment variable
     pub fn cloudflare_api_key(&self) -> Option<String> {
         self.get_var_by("_CLOUDFLARE_API_KEY")
     }
 
     /// Get the `REET_FREQUENCY` encvrionment variable
-    pub fn frequency(&self) -> Option<usize> {
+    pub fn frequency(&self) -> Option<u64> {
         self.get_var_by("_FREQUENCY")
-            .and_then(|v| v.parse::<usize>().ok())
+            .and_then(|v| v.parse::<u64>().ok())
     }
 
     /// Get all the `REET_*_NAME` environment variables
@@ -59,9 +54,9 @@ impl<'a> Config<'a> {
     }
 
     /// Get all the `REET_*_TTL` environment variables
-    pub fn ttl(&self) -> impl Iterator<Item = (String, Option<usize>)> + '_ {
+    pub fn ttl(&self) -> impl Iterator<Item = (String, Option<u32>)> + '_ {
         self.get_vars_by("_TTL")
-            .map(|(n, v)| (n, v.parse::<usize>().ok()))
+            .map(|(n, v)| (n, v.parse::<u32>().ok()))
     }
 
     /// Get all the `REET_*_PROXIED` environment variables
@@ -79,7 +74,7 @@ impl<'a> Config<'a> {
     }
 
     /// Get the `REET_*_TTL` variable from a `REET_*_NAME`
-    pub fn get_ttl<S: 'a + AsRef<str>>(&self, name: S) -> Option<usize> {
+    pub fn get_ttl<S: 'a + AsRef<str>>(&self, name: S) -> Option<u32> {
         self.ttl()
             .filter(|(n, _)| n.contains(name.as_ref().trim_end_matches("_NAME")))
             .next()
@@ -101,7 +96,6 @@ mod tests {
 
     fn setup() -> Config<'static> {
         env::set_var("REETTEST_ZONE_ID", "cloudflare_zone_id");
-        env::set_var("REETTEST_CLOUDFLARE_EMAIL", "test@example.com");
         env::set_var("REETTEST_CLOUDFLARE_API_KEY", "cloudflare_api_key");
         env::set_var("REETTEST_FREQUENCY", "10");
 
@@ -137,7 +131,6 @@ mod tests {
         let config = setup();
 
         assert_eq!(config.zone_id().unwrap(), "cloudflare_zone_id");
-        assert_eq!(config.cloudflare_email().unwrap(), "test@example.com");
         assert_eq!(config.cloudflare_api_key().unwrap(), "cloudflare_api_key");
         assert_eq!(config.frequency().unwrap(), 10);
 
