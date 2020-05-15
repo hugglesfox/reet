@@ -102,10 +102,7 @@ fn main() {
             let records = match client.request(&list_record) {
                 Ok(response) => response.result,
                 Err(e) => {
-                    error!(
-                        "Unable to get the dns record {} {:?}: {}",
-                        value, ip, e
-                    );
+                    error!("Unable to get the dns record {} {:?}: {}", value, ip, e);
                     continue;
                 }
             };
@@ -127,7 +124,7 @@ fn main() {
                         DnsContent::AAAA { content: _ } => ip.is_ipv6(),
                         _ => false,
                     })
-                    .next()
+                    .next() // HACK: Reqwest wasn't likeing the DnsContent struct so DNS record type filtering needed to be done on the client.
                 {
                     Some(record) => {
                         debug!("Updating record with id {}", record.id);
