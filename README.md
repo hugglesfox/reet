@@ -17,7 +17,7 @@ version: "3"
 
 services:
   ddns:
-    image: hugglesfox/reet
+    image: haydenhughes/reet
     restart: unless-stopped
     environment:
       - REET_CLOUDFLARE_API_KEY=_insert_cloudflare_api_key_here_
