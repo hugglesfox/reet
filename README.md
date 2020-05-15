@@ -1,4 +1,6 @@
-# Reet
+# Reet 
+
+![Docker Pulls](https://img.shields.io/docker/pulls/haydenhughes/reet)
 
 A tool to reet a dynamic public ip address to Cloudflare's servers.
 
