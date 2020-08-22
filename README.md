@@ -1,6 +1,6 @@
-# Reet 
+# Reet
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/haydenhughes/reet)](https://hub.docker.com/repository/docker/haydenhughes/reet)
+[![Docker Pulls](https://img.shields.io/docker/pulls/haydenhughes/reet)](https://hub.docker.com/repository/docker/haydenhughes/reet) [![Build Status](https://travis-ci.com/hugglesfox/reet.svg?branch=master)](https://travis-ci.com/hugglesfox/reet)
 
 A tool to reet a dynamic public ip address to Cloudflare's servers.
 
