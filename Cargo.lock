@@ -120,9 +120,9 @@ checksum = "130aac562c0dd69c56b3b1cc8ffd2e17be31d0b6c25b61c96b76231aa23e39e1"
 
 [[package]]
 name = "canihazip"
-version = "2.0.0"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "69048c8e5aae63d2b14e0912f36e3ed03e5a6df3054e19c2f2daaa95d4c9b362"
+checksum = "0f106917c1353f2b816fa55302d4f8b81a0d5794d9ee73961bc6c5a6955c282d"
 dependencies = [
  "reqwest",
 ]
