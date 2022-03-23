@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 cloudflare = "0.6.6"
 human-panic = "1.0.3"
-log = "0.4.11"
+log = "0.4.16"
 pretty_env_logger = "0.4.0"
 canihazip = "2.0.0"
 dotenv = "0.15.0"
