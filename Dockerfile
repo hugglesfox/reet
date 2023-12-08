@@ -1,4 +1,4 @@
-FROM rust:1.45.2 as builder
+FROM rust:1.74.1 as builder
 WORKDIR /usr/src/reet
 COPY . .
 RUN cargo install --path .
